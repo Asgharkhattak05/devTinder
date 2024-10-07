@@ -36,7 +36,9 @@ app.post("/signup", async (req, res) => {
     res.status(200).send({ message: "User saved successfully!", user });
   } catch (error) {
     console.error(error);
-    res.status(400).send("Unable to save the user to the database" + error.message);
+    res
+      .status(400)
+      .send("Unable to save the user to the database" + error.message);
   }
 });
 
@@ -63,30 +65,32 @@ app.delete("/user", async (req, res) => {
   }
 });
 
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const updatedFields = req.body;
 
+  const ALLOWD_UPDATE = ["firstName", "lastName", "age", "skills", "password ", ];
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      updatedFields,
-      { 
-        new: true,              // return the updated document
-        runValidators: true      // validate before updating
-      }
-    );
-    
+    const isUpdateAllowd = Object.keys(updatedFields).every((key) => {
+      return ALLOWD_UPDATE.includes(key);
+    });
+    if (!isUpdateAllowd) {
+      throw new Error();
+    }
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!updatedUser) {
       return res.status(404).send({ message: "User not found" });
     }
-    
+
     res.status(200).send({ message: "User updated successfully", updatedUser });
   } catch (error) {
-    res.status(400).send({ message: "Error while updating user", error });
+    res.status(400).send({ message: "Error while updating user"+ error.message });
   }
 });
-
 
 app.use("/", (req, res) => {
   res.send("Welcome to the DevTinder API!");
