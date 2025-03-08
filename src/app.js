@@ -1,19 +1,23 @@
 const express = require("express");
+const connectDB = require("./config/database.js");
 
 const app = express();
-app.get("/user", (req, res) => {
-  throw new Error();
-});
+const PORT = process.env.PORT || 3000;
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error(
+      "❌ Server failed to start due to DB connection error:",
+      error
+    );
+  });
 
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
-  }
-});
-// app.get("/user", (req, res) => {
-//   throw new Error();
-// });
-
-app.listen(3000, () => {
-  console.log("server is listening on port 3000");
+process.on("SIGINT", async () => {
+  console.log("🛑 Shutting down server...");
+  await mongoose.connection.close();
+  process.exit(0);
 });
