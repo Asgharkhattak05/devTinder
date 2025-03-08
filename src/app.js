@@ -2,28 +2,23 @@ const express = require("express");
 
 const app = express();
 
-app.use(
-  "/user",
-  (req, res, next) => {
-    console.log("handling the user route");
-    // res.send("response!!");
+app.use("/admin", (req, res, next) => {
+  const token = "1234t";
+  const isauthorized = token === "1234";
+  if (isauthorized) {
     next();
-  },
-  (req, res, next) => {
-    console.log("handling the user route 2");
-    // res.send("2nd response!!");
-    next();
-  },
-  (req, res, next) => {
-    console.log("handling the user route 3");
-    // res.send("3nd response!!");
-    next();
-  },
-  (req, res, next) => {
-    console.log("handling the user route 4");
-    next();
+  } else {
+    res.send("user is not authorized");
   }
-);
+});
+
+app.get("/admin/getAllUser", (req, res, next) => {
+  res.send("got all user data");
+});
+
+app.get("/admin/deleteSingleUser", (req, res, next) => {
+  res.send("user deleted successfully");
+});
 
 app.listen(3000, () => {
   console.log("server is listening on port 3000");
