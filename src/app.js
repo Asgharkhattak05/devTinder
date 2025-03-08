@@ -2,40 +2,28 @@ const express = require("express");
 
 const app = express();
 
-// app.get("/ab?c", (req, res) => {
-//   res.send("user get successfully");
-// });
-// app.get("/ab+c", (req, res) => {
-//   res.send("user get successfully");
-// });
-// app.get("/a*c", (req, res) => {
-//   res.send("user get successfully");
-// });
-// app.get("/a(bc)+d", (req, res) => {
-//   res.send("user get successfully");
-// });
-// app.get("/a/", (req, res) => {
-//   res.send("user get successfully");
-// });
-
-// app.get("/user/:id", (req, res) => {
-//   console.log(req.params);
-//   res.send("user get successfully");
-// });
-
-// params is optional here
-
-// app.get("/user/:id?", (req, res) => {
-//   console.log(req.params);
-//   res.send("user get successfully");
-// });
-
-// for query parameters
-
-app.get("/user", (req, res) => {
-  console.log(req.query);
-  res.send("user get successfully");
-});
+app.use(
+  "/user",
+  (req, res, next) => {
+    console.log("handling the user route");
+    // res.send("response!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("handling the user route 2");
+    // res.send("2nd response!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("handling the user route 3");
+    // res.send("3nd response!!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("handling the user route 4");
+    next();
+  }
+);
 
 app.listen(3000, () => {
   console.log("server is listening on port 3000");
